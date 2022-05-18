@@ -1,0 +1,9 @@
+td,th {
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 20px;
+}
+
+.left-align-col {
+    text-align: left;
+}

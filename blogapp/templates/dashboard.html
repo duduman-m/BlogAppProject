@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+{% block style %}
+    <link rel="stylesheet" type='text/css' href="{% static 'basic.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1>Writters</h1>
+        <table>
+            <tr>
+                <th class="left-align-col">Writer</th>
+                <th>Total Articles Written</th>
+                <th>Total Articles Written Last 30</th>
+            </tr>
+            {% for writer in object_list %}
+                <tr>
+                    <td class="left-align-col">{{ writer.name }}</td>
+                    <td>{{ writer.articles_total }}</td>
+                    <td>{{ writer.articles_last_30_days }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>No articles yet.</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="container py-3">
+        {% if user.is_authenticated %}
+            <p>Hi {{ user.name }}!<p></p>
+            <p><a href="{% url 'articles:add' %}">Add Article</a></p>
+            {% if user.is_editor %}
+                <p><a href="{% url 'articles:approval' %}">Approval Page</a></p>
+                <p><a href="{% url 'articles:articles-edited' %}">Edited Articles</a></p>
+            {% endif %}
+            <p><a href="{% url 'logout' %}">Log Out</a></p>
+        {% else %}
+            <p>You are not logged in</p>
+            <p><a href="{% url 'login' %}">Log In</a> or <a href="{% url 'register' %}">Register</a></p>
+        {% endif %}
+    </div>
+{% endblock %}

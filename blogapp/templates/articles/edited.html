@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edited articles{% endblock %}
+{% block style %}
+    <link rel="stylesheet" type='text/css' href="{% static 'basic.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1>Edited articles</h1>
+        <table>
+            <tr>
+                <th class="writer-col">ID</th>
+                <th class="writer-col">Title</th>
+                <th>Status</th>
+                <th>Written By</th>
+                <th>Edited By</th>
+                <th>Edit</th>
+            </tr>
+            {% for article in object_list %}
+                <tr>
+                    <td class="writer-col">{{ article.pk }}</td>
+                    <td class="writer-col">{{ article.title }}</td>
+                    <td>{{ article.get_status_display }}</td>
+                    <td>{{ article.written_by|default_if_none:"--" }}</td>
+                    <td>{{ article.edited_by|default_if_none:"--" }}</td>
+                    <td>
+                        <button type="button" class="btn btn-info" onclick=edit({{ article.pk }})>
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>No articles yet.</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="container py-3">
+        <button id="goBack" type="button" class="btn btn-info float-right" onclick="history.back()">Back</button>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        function reload() {
+            location.reload();
+            return false;
+        }
+
+        function ajax_request(url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+            })
+            reload();
+        }
+
+        function edit(pk) {
+            location.href = "{% url 'articles:edit' 0 %}".replace("0", pk);
+        }
+    </script>
+{% endblock %}
