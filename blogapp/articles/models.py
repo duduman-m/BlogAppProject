@@ -15,10 +15,14 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=False, null=False)
     content = models.TextField(blank=False, null=False)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=IN_PROGRESS, blank=False)
-    written_by = models.ForeignKey("users.Writer", on_delete=models.CASCADE, related_name="articles_written")
+    status = models.IntegerField(
+        choices=STATUS_CHOICES, default=IN_PROGRESS, blank=False)
+    written_by = models.ForeignKey(
+        "users.Writer", on_delete=models.CASCADE,
+        related_name="articles_written")
     edited_by = models.ForeignKey(
-        "users.Writer", on_delete=models.CASCADE, related_name="articles_edited", blank=True, null=True)
+        "users.Writer", on_delete=models.CASCADE,
+        related_name="articles_edited", blank=True, null=True)
 
     class Meta:
         permissions = [

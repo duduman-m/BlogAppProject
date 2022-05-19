@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, resolve
@@ -35,9 +36,11 @@ class EditorRequiredView(LoginRequiredMixin, View):
 
 
 class ApprovalMixin(EditorRequiredView, PermissionRequiredMixin):
-    """Requires that the user is authenticated, has the 'approve/reject' permission and is an editor"""
+    """Requires that the user is authenticated, has the 'approve/reject'
+        permission and is an editor"""
     permission_required = 'articles.approve/reject'
-    permission_denied_message = "You do not have the permission to approve/reject articles"
+    permission_denied_message = \
+        "You do not have the permission to approve/reject articles"
 
     def handle_no_permission(self):
         messages.error(self.request, self.permission_denied_message)
@@ -68,7 +71,8 @@ class AddArticleView(PermissionRequiredMixin, LoginRequiredMixin, FormView):
 class EditArticleView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     """Article UpdateView"""
     permission_required = 'articles.edit'
-    permission_denied_message = "You do not have the permission to edit articles"
+    permission_denied_message = \
+        "You do not have the permission to edit articles"
     template_name = 'articles/edit.html'
     model = Article
     form_class = ArticleForm
@@ -88,7 +92,8 @@ class EditArticleView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
 
 
 class ArticleApprovalView(ApprovalMixin, ListView):
-    """Returns list of all 'IN_PROGRESS'(neither approved or rejected) articles."""
+    """Returns list of all 'IN_PROGRESS'
+        (neither approved or rejected) articles."""
     template_name = 'articles/approval.html'
     model = Article
 
@@ -107,7 +112,8 @@ class EditedArticlesView(EditorRequiredView, ListView):
     model = Article
 
     def get_queryset(self):
-        return Article.objects.filter(edited_by=self.request.user).order_by('pk')
+        return Article.objects.filter(
+            edited_by=self.request.user).order_by('pk')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

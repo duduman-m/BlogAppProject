@@ -10,9 +10,11 @@ class ApprovalViewTest(TestCase):
         self.client = Client()
         self.password = "TestCasePass"
         self.editor = Writer.objects.create_user(
-            username="editor", first_name="Test", last_name="Editor", is_editor=True, password=self.password)
+            username="editor", first_name="Test",
+            last_name="Editor", is_editor=True, password=self.password)
         self.not_editor = Writer.objects.create_user(
-            username="not_editor", first_name="Test", last_name="Not Editor", is_editor=False, password=self.password)
+            username="not_editor", first_name="Test",
+            last_name="Not Editor", is_editor=False, password=self.password)
         self.instance = Article.objects.create(
             title="Test Case", content="Test Content", written_by=self.editor)
 
@@ -38,7 +40,8 @@ class ApprovalViewTest(TestCase):
         self.assertEqual(response.redirect_chain[0][0], '/')
         self.assertEqual(response.redirect_chain[0][1], 302)
         for mess in response.context['messages']:
-            self.assertEqual(mess.message, "You do not have the permission to approve/reject articles")
+            self.assertEqual(mess.message, "You do not have the permission to "
+                                           "approve/reject articles")
 
 
 class AddArticleTestCase(TestCase):
@@ -46,7 +49,8 @@ class AddArticleTestCase(TestCase):
         self.client = Client()
         self.password = "TestCasePass"
         self.editor = Writer.objects.create_user(
-            username="editor", first_name="Test", last_name="Editor", is_editor=True, password=self.password)
+            username="editor", first_name="Test", last_name="Editor",
+            is_editor=True, password=self.password)
 
     def test_access_with_permission(self):
         self.editor.user_permissions.set(Permission.objects.all())
@@ -60,8 +64,10 @@ class AddArticleTestCase(TestCase):
         self.client.login(username="editor", password=self.password)
         response = self.client.post('/article/add/', {}, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'title', 'This field is required.')
-        self.assertFormError(response, 'form', 'content', 'This field is required.')
+        self.assertFormError(response, 'form', 'title',
+                             'This field is required.')
+        self.assertFormError(response, 'form', 'content',
+                             'This field is required.')
 
     def test_post_with_data(self):
         self.editor.user_permissions.set(Permission.objects.all())
@@ -82,7 +88,8 @@ class AddArticleTestCase(TestCase):
         self.assertEqual(response.redirect_chain[0][0], '/')
         self.assertEqual(response.redirect_chain[0][1], 302)
         for mess in response.context['messages']:
-            self.assertEqual(mess.message, "You do not have the permission to add articles")
+            self.assertEqual(mess.message, "You do not have the permission "
+                                           "to add articles")
 
 
 class EditArticleTestCase(TestCase):
@@ -90,9 +97,11 @@ class EditArticleTestCase(TestCase):
         self.client = Client()
         self.password = "TestCasePass"
         self.editor = Writer.objects.create_user(
-            username="editor", first_name="Test", last_name="Editor", is_editor=True, password=self.password)
+            username="editor", first_name="Test", last_name="Editor",
+            is_editor=True, password=self.password)
         self.not_editor = Writer.objects.create_user(
-            username="not_editor", first_name="Test", last_name="Not Editor", is_editor=False, password=self.password)
+            username="not_editor", first_name="Test", last_name="Not Editor",
+            is_editor=False, password=self.password)
         self.instance = Article.objects.create(
             title="Test Case", content="Test Content", written_by=self.editor)
 
@@ -106,7 +115,8 @@ class EditArticleTestCase(TestCase):
     def test_post_with_no_data(self):
         self.editor.user_permissions.set(Permission.objects.all())
         self.client.login(username="editor", password=self.password)
-        response = self.client.post(f'/article/{self.instance.pk}/', {}, follow=True)
+        response = self.client.post(
+            f'/article/{self.instance.pk}/', {}, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'title', 'This field is required.')
         self.assertFormError(response, 'form', 'content', 'This field is required.')
@@ -118,11 +128,13 @@ class EditArticleTestCase(TestCase):
             'title': 'Test Case Article',
             'content': 'Content'
         }
-        response = self.client.post(f'/article/{self.instance.pk}/', data, follow=True)
+        response = self.client.post(
+            f'/article/{self.instance.pk}/', data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0], '/')
         self.assertEqual(response.redirect_chain[0][1], 302)
-        self.assertEqual(Article.objects.get(title='Test Case Article'), self.instance)
+        self.assertEqual(
+            Article.objects.get(title='Test Case Article'), self.instance)
 
     def test_access_without_permission(self):
         self.client.login(username="editor", password=self.password)
@@ -130,7 +142,8 @@ class EditArticleTestCase(TestCase):
         self.assertEqual(response.redirect_chain[0][0], '/')
         self.assertEqual(response.redirect_chain[0][1], 302)
         for mess in response.context['messages']:
-            self.assertEqual(mess.message, "You do not have the permission to edit articles")
+            self.assertEqual(mess.message, "You do not have the permission "
+                                           "to edit articles")
 
 
 
