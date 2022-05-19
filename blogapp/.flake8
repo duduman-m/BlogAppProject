@@ -8,4 +8,7 @@ exclude =
     venv,
     .env,
     .idea,
-    static
+    static,
+    migrations,
+    settings.py,
+    local_settings.py

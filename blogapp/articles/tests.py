@@ -108,7 +108,8 @@ class EditArticleTestCase(TestCase):
     def test_access_with_permission(self):
         self.editor.user_permissions.set(Permission.objects.all())
         self.client.login(username="editor", password=self.password)
-        response = self.client.get(f'/article/{self.instance.pk}/', follow=True)
+        response = self.client.get(
+            f'/article/{self.instance.pk}/', follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "articles/edit.html")
 
@@ -118,8 +119,10 @@ class EditArticleTestCase(TestCase):
         response = self.client.post(
             f'/article/{self.instance.pk}/', {}, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'title', 'This field is required.')
-        self.assertFormError(response, 'form', 'content', 'This field is required.')
+        self.assertFormError(
+            response, 'form', 'title', 'This field is required.')
+        self.assertFormError(
+            response, 'form', 'content', 'This field is required.')
 
     def test_post_with_data(self):
         self.editor.user_permissions.set(Permission.objects.all())
@@ -138,12 +141,10 @@ class EditArticleTestCase(TestCase):
 
     def test_access_without_permission(self):
         self.client.login(username="editor", password=self.password)
-        response = self.client.get(f'/article/{self.instance.pk}/', follow=True)
+        response = self.client.get(
+            f'/article/{self.instance.pk}/', follow=True)
         self.assertEqual(response.redirect_chain[0][0], '/')
         self.assertEqual(response.redirect_chain[0][1], 302)
         for mess in response.context['messages']:
             self.assertEqual(mess.message, "You do not have the permission "
                                            "to edit articles")
-
-
-

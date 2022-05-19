@@ -50,7 +50,8 @@ class ApprovalMixin(EditorRequiredView, PermissionRequiredMixin):
 class AddArticleView(PermissionRequiredMixin, LoginRequiredMixin, FormView):
     """Article creation FormView"""
     permission_required = 'articles.create'
-    permission_denied_message = "You do not have the permission to add articles"
+    permission_denied_message = \
+        "You do not have the permission to add articles"
     template_name = 'articles/add.html'
     form_class = ArticleForm
     success_url = '/'
@@ -137,4 +138,3 @@ class ArticleStatusView(ApprovalMixin, AjaxView):
         article.save()
 
         return JsonResponse({})
-
